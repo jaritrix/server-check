@@ -4,7 +4,6 @@
   "description": "server deploy",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
   },
   "keywords": [
     "node",
