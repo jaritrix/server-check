@@ -4,7 +4,7 @@
   "description": "server deploy",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "keywords": [
     "node",
@@ -13,7 +13,11 @@
   "author": "gaurav",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.15.1",
+    "nodemon": "^3.1.10"
   }
 }

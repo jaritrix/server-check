@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Auth Test</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Auth Test App</h1>
+
+        <div id="auth-section">
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <input type="text" name="username" id="signup-username" placeholder="Username" required>
+                <input type="email" name="email" id="signup-email" placeholder="Email" required>
+                <input type="password" name="password" id="signup-password" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+
+            <h2>Login</h2>
+            <form id="login-form">
+                <input type="text" id="login-username-or-email" placeholder="Email or Username" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p id="message" class="info-message"></p>
+        </div>
+
+        <div id="dashboard-section" style="display: none;">
+            <h2>Welcome <span id="welcome-username"></span>!</h2>
+            <p>You are logged in successfully.</p>
+            <p>This shows your frontend is connected to the backend.</p>
+            <button id="logout-btn">Logout</button>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="script.js"></script>
+</body>
+</html>

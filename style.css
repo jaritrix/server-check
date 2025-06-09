@@ -1,0 +1,93 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #282c34; /* Darker background */
+    color: #e0e0e0; /* Light text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #3b424f; /* Slightly lighter dark background */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    width: 400px;
+    max-width: 90%;
+    border: 1px solid #5a6470;
+}
+
+h1, h2 {
+    color: #61dafb; /* Light blue/cyan for headers */
+    margin-bottom: 20px;
+}
+
+form {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #4f5a6b;
+    border-radius: 5px;
+    background-color: #313742;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: calc(100% - 22px); /* Adjust for padding and border */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #5a6470;
+    border-radius: 4px;
+    background-color: #2d313a;
+    color: #e0e0e0;
+}
+
+input::placeholder {
+    color: #d35757;
+}
+
+button {
+    background-color: #61dafb;
+    color: #282c34;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #4fa3d1;
+}
+
+.info-message {
+    margin-top: 20px;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.info-message.success {
+    color: #28a745; /* Green */
+    background-color: #d4edda;
+}
+
+.info-message.error {
+    color: #dc3545; /* Red */
+    background-color: #f8d7da;
+}
+/* Ensure dashboard section is styled */
+#dashboard-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #4f5a6b;
+}
+#welcome-username {
+    color: #61dafb;
+}
+
