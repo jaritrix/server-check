@@ -14,14 +14,10 @@ app.use(express.json());
 const MongoDB_URI = process.env.MongoDB_URI;
 
 // const authRoutes = require('./auth'); 
-mongoose.connect(MongoDB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log('MongoDB connected');
-}).catch(err => {
-    console.error('MongoDB connection error:', err);
-});
+
+mongoose.connect(process.env.MongoDB_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 
   app.post('/signup', async (req, res) => {
