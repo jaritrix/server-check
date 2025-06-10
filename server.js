@@ -11,10 +11,10 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use(express.static('./'));
 app.use(express.json());
-const MONGO_URI = process.env.MONGO_URI;
+const MongoDB_URI = process.env.MongoDB_URI;
 
 // const authRoutes = require('./auth'); 
-mongoose.connect(MONGO_URI, {
+mongoose.connect(MongoDB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
