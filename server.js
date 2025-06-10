@@ -1,108 +1,83 @@
-require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const path = require('path');
+
 const app = express();
-const path = require('path')
-const User = require('./User');
-const PORT = process.env.PORT || 4000;
-const authRoutes = require('./auth');
+const PORT = process.env.PORT || 3000;
+
+// Middleware
 app.use(cors());
-app.use('/api/auth', authRoutes);
-app.use(express.static('./'));
 app.use(express.json());
-const MongoDB_URI = process.env.MongoDB_URI;
+app.use(express.static(__dirname)); // serve index.html and script.js from current folder
 
-// const authRoutes = require('./auth'); 
+// MongoDB Connection
+const mongoURI = process.env.MongoDB_URI;
+mongoose.connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('MongoDB connected');
+}).catch(err => {
+    console.error('MongoDB connection error:', err.message);
+});
 
-mongoose.connect(process.env.MongoDB_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+// User Schema
+const userSchema = new mongoose.Schema({
+    username: String,
+    email: String,
+    password: String
+});
+const User = mongoose.model('User', userSchema);
 
-
-  app.post('/signup', async (req, res) => {
-  try {
+// Signup Route
+app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
-    
-    // Create new user using your User model
-    const newUser = new User({
-      username,
-      email,
-      password
-    });
 
-    // Save user to database
-    await newUser.save();
-    
-    res.json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ message: 'Error registering user', error: error.message });
-  }
+    try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) return res.status(400).json({ message: 'Email already registered' });
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({ username, email, password: hashedPassword });
+        await newUser.save();
+
+        res.status(201).json({ message: 'User created successfully' });
+    } catch (err) {
+        res.status(500).json({ message: 'Signup failed' });
+    }
 });
 
-// Start server
-app.listen(4000, () => {
-  console.log('Server running on port 4000');
+// Login Route
+app.post('/login', async (req, res) => {
+    const { usernameOrEmail, password } = req.body;
+
+    try {
+        const user = await User.findOne({
+            $or: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
+        });
+
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(401).json({ message: 'Invalid password' });
+
+        const token = jwt.sign({ id: user._id }, 'secretkey', { expiresIn: '1h' });
+
+        res.json({ message: 'Login successful', token, username: user.username });
+    } catch (err) {
+        res.status(500).json({ message: 'Login failed' });
+    }
 });
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MongoDB_URI, {
-      useNewUrlParser: true,      
-      useUnifiedTopology: true,  
-    });
-    console.log("MongoDB Connected Successfully!");
-
-  } catch (err) {
-    console.error("MongoDB connection error:", err.message);
-    process.exit(1);
-  };
-}
-
-connectDB()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server is running at http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error("Failed to start server because of MongoDB connection error.");
-  });
-
-
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html')); // <-- Yeh line add karein
+// Serve HTML page for any route
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-
-
-
-app.get('./', (req, res, next) => {
-    res.type('text/css');
-    next();
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
-
-app.get('./', (req, res, next) => {
-    res.type('text/javascript');
-    next();
-});
-
-app.get('/', (req, res) => {
-    res.status(200).send('<h1>Simple Auth Backend API is Running!</h1><p>Use /api/auth/signup and /api/auth/login endpoints.</p>');
-});
-
-
-
-// app.get("/", (req, res) => {
-//   res.send("Hello, World! bhai gaurav");
-// });
-
-// app.get('/run', (req, res) => {
-//   res.send("i am fine and what u doing");
-// });
-
-// app.get("/login", (req, res) => {
-//   res.send("login page");
-// });
