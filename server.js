@@ -11,13 +11,17 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use(express.static('./'));
 app.use(express.json());
+const MONGO_URI = process.env.MONGO_URI;
 
 // const authRoutes = require('./auth'); 
-
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB Connected Successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
+mongoose.connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('MongoDB connected');
+}).catch(err => {
+    console.error('MongoDB connection error:', err);
+});
 
 
   app.post('/signup', async (req, res) => {
