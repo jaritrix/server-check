@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
         messageDisplay.className = `info-message ${type}`;
     }
 
-    function toggleAuthSections(loggedIn) {
+    function toggleAuthSections(loggedIn, username = '') {
         if (loggedIn) {
             authSection.style.display = 'none';
             dashboardSection.style.display = 'block';
-            welcomeUsername.textContent = localStorage.getItem('username') || 'User';
+            welcomeUsername.textContent = username || 'User';
         } else {
             authSection.style.display = 'block';
             dashboardSection.style.display = 'none';
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         displayMessage('');
     }
 
-    toggleAuthSections(!!localStorage.getItem('token'));
+    toggleAuthSections(false); // always show login/signup on reload
 
     async function handleSignup(e) {
         e.preventDefault();
@@ -38,9 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch('/signup', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
 
@@ -69,20 +67,16 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch('/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('username', data.username || formData.usernameOrEmail);
                 displayMessage('Login successful!', 'success');
                 loginForm.reset();
-                toggleAuthSections(true);
+                toggleAuthSections(true, data.username || formData.usernameOrEmail);
             } else {
                 displayMessage(data.message || 'Login failed', 'error');
             }
@@ -93,8 +87,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function handleLogout() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
         displayMessage('Logged out successfully.', 'info');
         toggleAuthSections(false);
     }
